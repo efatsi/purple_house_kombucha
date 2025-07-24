@@ -15,4 +15,5 @@ gem "awesome_print"
 group :development, :test do
   gem "pry-rails"
   gem "foreman"
+  gem "annotate"
 end
