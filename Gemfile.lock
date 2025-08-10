@@ -176,6 +176,7 @@ GEM
       racc (~> 1.4)
     nokogiri (1.18.9-x86_64-linux-musl)
       racc (~> 1.4)
+    ostruct (0.6.3)
     pg (1.5.9)
     pp (0.6.2)
       prettyprint
@@ -299,6 +300,7 @@ DEPENDENCIES
   bootsnap
   foreman
   importmap-rails
+  ostruct
   pg (~> 1.1)
   pry-rails
   puma (>= 5.0)

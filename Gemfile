@@ -17,6 +17,9 @@ gem "administrate"
 # utility
 gem "awesome_print"
 
+# warnings
+gem "ostruct"
+
 group :development, :test do
   gem "pry-rails"
   gem "foreman"
