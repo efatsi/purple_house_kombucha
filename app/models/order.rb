@@ -1,4 +1,8 @@
 class Order < ApplicationRecord
+  STATUSES = ["pre_flight", "open", "paid", "canceled"]
+
+  validates :status, presence: true, inclusion: { in: STATUSES }
+
   belongs_to :user
   has_many :line_items
 end
