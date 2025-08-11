@@ -10,7 +10,9 @@ class OrderDashboard < Administrate::BaseDashboard
   ATTRIBUTE_TYPES = {
     id: Field::Number,
     status: Field::String,
+    paid: Field::Boolean,
     user: Field::BelongsTo,
+    line_items: Field::HasMany,
     created_at: Field::DateTime,
     updated_at: Field::DateTime,
   }.freeze
@@ -22,6 +24,7 @@ class OrderDashboard < Administrate::BaseDashboard
   # Feel free to add, remove, or rearrange items.
   COLLECTION_ATTRIBUTES = %i[
     status
+    paid
     user
     created_at
   ].freeze
@@ -31,7 +34,9 @@ class OrderDashboard < Administrate::BaseDashboard
   SHOW_PAGE_ATTRIBUTES = %i[
     id
     status
+    paid
     user
+    line_items
     created_at
     updated_at
   ].freeze
@@ -41,6 +46,7 @@ class OrderDashboard < Administrate::BaseDashboard
   # on the model's form (`new` and `edit`) pages.
   FORM_ATTRIBUTES = %i[
     status
+    paid
     user
   ].freeze
 

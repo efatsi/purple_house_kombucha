@@ -1,4 +1,7 @@
 class Flavor < ApplicationRecord
+  has_one_attached :image
+  has_one_attached :logo
+
   validates :name, presence: true
   validates :description, presence: true
   validates :available_oz, numericality: { greater_than_or_equal_to: 0 }

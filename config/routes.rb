@@ -9,6 +9,7 @@ Rails.application.routes.draw do
     resources :bottles
     resources :users
     resources :orders
+    resources :flavors
   end
 
   get "up" => "rails/health#show", as: :rails_health_check

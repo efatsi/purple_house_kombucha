@@ -13,6 +13,7 @@ gem "bootsnap", require: false
 
 # application
 gem "administrate"
+gem "image_processing", ">= 1.2"
 
 # utility
 gem "awesome_print"
