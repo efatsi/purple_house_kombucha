@@ -14,7 +14,6 @@ class FlavorDashboard < Administrate::BaseDashboard
     available_oz: Field::Number,
     image: Field::ActiveStorage,
     logo: Field::ActiveStorage,
-    line_items: Field::HasMany,
     created_at: Field::DateTime,
     updated_at: Field::DateTime,
   }.freeze
@@ -27,20 +26,17 @@ class FlavorDashboard < Administrate::BaseDashboard
   COLLECTION_ATTRIBUTES = %i[
     name
     available_oz
-    description
     created_at
   ].freeze
 
   # SHOW_PAGE_ATTRIBUTES
   # an array of attributes that will be displayed on the model's show page.
   SHOW_PAGE_ATTRIBUTES = %i[
-    id
     name
     description
     available_oz
     image
     logo
-    line_items
     created_at
     updated_at
   ].freeze
@@ -71,7 +67,7 @@ class FlavorDashboard < Administrate::BaseDashboard
   # Overwrite this method to customize how flavors are displayed
   # across all pages of the admin dashboard.
   #
-  # def display_resource(flavor)
-  #   "Flavor ##{flavor.id}"
-  # end
+  def display_resource(flavor)
+    flavor.name
+  end
 end

@@ -4,9 +4,8 @@ Rails.application.routes.draw do
   get "/inventory", to: "pages#shop", as: :shop
 
   namespace :admin do
-    root to: "bottles#index"
+    root to: "flavors#index"
 
-    resources :bottles
     resources :users
     resources :orders
     resources :flavors
