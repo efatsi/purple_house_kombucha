@@ -26,4 +26,6 @@ group :development, :test do
   gem "pry-rails"
   gem "foreman"
   gem "annotate"
+
+  gem "tidewave", group: :development
 end
