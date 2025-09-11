@@ -31,23 +31,17 @@ class LineItemsController < ApplicationController
   private
 
   def find_or_create_order
-    if session[:order_id]
-      Order.find_by(id: session[:order_id]) || create_new_order
-    else
-      create_new_order
-    end
+    current_user.orders.find_by(status: "pre_flight") || create_new_order
   end
 
   def create_new_order
-    order = Order.create!(
-      user: current_user_or_guest,
-      status: "open"
+    Order.create!(
+      user: current_user,
+      status: "pre_flight"
     )
-    session[:order_id] = order.id
-    order
   end
 
-  def current_user_or_guest
+  def current_user
     # For now, create a guest user or handle as needed
     # You might want to implement proper user authentication later
     User.find_or_create_by(username: "guest") do |user|
