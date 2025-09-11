@@ -19,6 +19,13 @@
 
   <body class="animated-gradient-bg">
     <main class="container mx-auto mt-8 px-5 flex flex-col justify-center">
+      <% if flash.any? %>
+        <% flash.each do |type, message| %>
+          <div class="mb-4 p-4 rounded-md <%= type == 'notice' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' %>">
+            <%= message %>
+          </div>
+        <% end %>
+      <% end %>
       <%= yield %>
     </main>
   </body>

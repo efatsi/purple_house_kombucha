@@ -2,6 +2,7 @@ Rails.application.routes.draw do
   root "pages#home"
 
   get "/inventory", to: "pages#shop", as: :shop
+  resources :line_items, only: [:create]
 
   namespace :admin do
     root to: "flavors#index"
