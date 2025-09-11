@@ -24,8 +24,26 @@ class LineItemsController < ApplicationController
 
     render turbo_stream: [
       turbo_stream.update("modal_frame", ""),
-      turbo_stream.update("flash", partial: "shared/flash")
+      turbo_stream.update("flash", partial: "shared/flash"),
+      turbo_stream.update("header", partial: "shared/header")
     ]
+  end
+
+  def update
+    @line_item = LineItem.find(params[:id])
+
+    if @line_item.update(count: params[:line_item][:count].to_i)
+      redirect_to checkout_path, notice: "Item updated successfully!"
+    else
+      redirect_to checkout_path, alert: "Error updating item."
+    end
+  end
+
+  def destroy
+    @line_item = LineItem.find(params[:id])
+    @line_item.destroy
+
+    redirect_to checkout_path, notice: "Item removed from cart."
   end
 
   private

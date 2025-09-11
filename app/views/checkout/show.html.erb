@@ -1,28 +1,24 @@
-<div class="mx-auto max-w-2xl px-4 py-16 sm:px-6 lg:max-w-4xl lg:px-8">
+<div class="mx-auto max-w-2xl px-4 py-6 sm:px-6 lg:max-w-4xl lg:px-8">
   <h1 class="text-3xl font-bold tracking-tight text-gray-900 mb-8">
     Review Your Order
   </h1>
 
   <div class="bg-white shadow rounded-lg overflow-hidden">
     <div class="px-4 py-5 sm:p-6">
-      <% @line_items.each_with_index do |line_item, index| %>
-        <div class="<%= 'border-t border-gray-200 pt-4' if index > 0 %> <%= 'pb-4' unless index == @line_items.length - 1 %>">
-          <div class="flex justify-between items-start">
+      <% @line_items.group_by(&:flavor).each_with_index do |(flavor, grouped_items), flavor_index| %>
+        <div class="<%= 'border-t border-gray-200 pt-6' if flavor_index > 0 %> <%= 'pb-6' unless flavor_index == @line_items.group_by(&:flavor).keys.length - 1 %>">
+          <div class="flex justify-between items-start mb-4">
             <div class="flex-1">
               <h3 class="text-lg font-medium text-gray-900">
-                <%= line_item.flavor.name %>
+                <%= flavor.name %>
               </h3>
               <p class="mt-1 text-sm text-gray-600">
-                <%= line_item.flavor.description %>
+                <%= flavor.description %>
               </p>
-              <div class="mt-2 flex items-center space-x-4 text-sm text-gray-500">
-                <span class="capitalize"><%= line_item.bottle_size %> bottle</span>
-                <span>Quantity: <%= line_item.count %></span>
-              </div>
             </div>
             <div class="ml-4 flex-shrink-0">
-              <% if line_item.flavor.image.present? %>
-                <%= image_tag line_item.flavor.image, class: "w-20 h-20 object-cover rounded" %>
+              <% if flavor.image.present? %>
+                <%= image_tag flavor.image, class: "w-20 h-20 object-cover rounded" %>
               <% else %>
                 <div class="w-20 h-20 bg-gray-200 rounded flex items-center justify-center">
                   <span class="text-gray-400 text-xs">No Image</span>
@@ -30,19 +26,57 @@
               <% end %>
             </div>
           </div>
+
+          <div class="space-y-3">
+            <% grouped_items.each do |line_item| %>
+              <div class="relative group bg-gray-50 rounded p-3 hover:bg-gray-100 transition-colors">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center space-x-4 text-sm text-gray-700">
+                    <span class="capitalize font-medium w-32"><%= line_item.bottle_size %> bottle</span>
+                    <span>Quantity: <span id="quantity-display-<%= line_item.id %>"><%= line_item.count %></span></span>
+                  </div>
+
+                  <div class="opacity-0 group-hover:opacity-100 transition-opacity flex items-center space-x-2">
+                    <button onclick="toggleEdit(<%= line_item.id %>)" class="p-1 text-gray-400 hover:text-blue-600 transition-colors" title="Edit quantity">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                      </svg>
+                    </button>
+                    <button onclick="deleteItem(<%= line_item.id %>)" class="p-1 text-gray-400 hover:text-red-600 transition-colors" title="Remove item">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+
+                <%= form_with model: line_item, url: line_item_path(line_item), method: :patch, local: true, id: "edit-form-#{line_item.id}", class: "hidden mt-3" do |form| %>
+                  <div class="flex items-center space-x-3">
+                    <%= form.number_field :count, value: line_item.count, min: 1, class: "block w-20 rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm p-1 px-3" %>
+                    <div class="flex space-x-2">
+                      <%= form.submit "Update", class: "inline-flex items-center px-3 py-1 border border-transparent text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500" %>
+                      <button type="button" onclick="toggleEdit(<%= line_item.id %>)" class="inline-flex items-center px-3 py-1 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                <% end %>
+              </div>
+            <% end %>
+          </div>
         </div>
       <% end %>
     </div>
   </div>
 
   <div class="mt-8 bg-gray-50 rounded-lg p-6">
-    <div class="flex justify-between items-center text-lg font-medium text-gray-900 mb-4">
+    <div class="flex justify-center text-lg font-medium text-gray-900 mb-4 gap-2">
       <span>Total Items:</span>
       <span><%= @line_items.sum(:count) %> bottles</span>
     </div>
-    
-    <%= form_with url: submit_order_path, method: :patch, local: true, class: "w-full" do |form| %>
-      <%= form.submit "Submit Order", class: "w-full bg-purple-600 text-white py-3 px-4 rounded-md font-medium hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2" %>
+
+    <%= form_with url: submit_order_path, method: :patch, local: true, class: "w-full flex justify-center" do |form| %>
+      <%= form.submit "Submit Order", class: "w-60 bg-purple-600 text-white py-3 px-4 rounded-md font-medium hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2" %>
     <% end %>
   </div>
 
@@ -50,3 +84,39 @@
     <%= link_to "Continue Shopping", shop_path, class: "text-purple-600 hover:text-purple-500 text-sm font-medium" %>
   </div>
 </div>
+
+<script>
+  function toggleEdit(itemId) {
+    const form = document.getElementById(`edit-form-${itemId}`);
+    const display = document.getElementById(`quantity-display-${itemId}`);
+
+    if (form.classList.contains('hidden')) {
+      form.classList.remove('hidden');
+    } else {
+      form.classList.add('hidden');
+    }
+  }
+
+  function deleteItem(itemId) {
+    if (confirm('Are you sure you want to remove this item from your cart?')) {
+      const form = document.createElement('form');
+      form.method = 'POST';
+      form.action = `/line_items/${itemId}`;
+
+      const methodField = document.createElement('input');
+      methodField.type = 'hidden';
+      methodField.name = '_method';
+      methodField.value = 'DELETE';
+      form.appendChild(methodField);
+
+      const tokenField = document.createElement('input');
+      tokenField.type = 'hidden';
+      tokenField.name = 'authenticity_token';
+      tokenField.value = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+      form.appendChild(tokenField);
+
+      document.body.appendChild(form);
+      form.submit();
+    }
+  }
+</script>

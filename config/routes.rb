@@ -2,7 +2,7 @@ Rails.application.routes.draw do
   root "pages#home"
 
   get "/inventory", to: "pages#shop", as: :shop
-  resources :line_items, only: [:new, :create]
+  resources :line_items, only: [:new, :create, :update, :destroy]
 
   get "/checkout", to: "checkout#show", as: :checkout
   patch "/checkout/submit", to: "checkout#submit", as: :submit_order
