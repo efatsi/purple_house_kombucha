@@ -29,6 +29,11 @@
           <% end %>
         <% end %>
       </div>
+
+      <%= turbo_frame_tag "modal_frame" do %>
+        <!-- Modal content will be loaded here via Turbo Frame -->
+      <% end %>
+
       <%= yield %>
     </main>
   </body>
