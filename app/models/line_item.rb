@@ -1,7 +1,11 @@
 class LineItem < ApplicationRecord
-  SIZES = ["small", "medium", "large"]
+  SIZES = {
+    "Small (8oz)" => "small",
+    "Medium (16oz)" => "medium",
+    "Large (32oz)" => "large",
+  }
 
-  validates :bottle_size, presence: true, inclusion: { in: SIZES }
+  validates :bottle_size, presence: true, inclusion: { in: SIZES.values }
 
   belongs_to :order
   belongs_to :flavor
