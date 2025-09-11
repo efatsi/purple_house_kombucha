@@ -1,7 +1,7 @@
 class LineItemsController < ApplicationController
   def new
     @flavor = Flavor.find(params[:flavor_id])
-    render layout: false
+    render layout: "modal"
   end
 
   def create

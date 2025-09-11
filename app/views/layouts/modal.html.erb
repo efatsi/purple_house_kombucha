@@ -1,0 +1,9 @@
+<%= turbo_frame_tag "modal_frame" do %>
+  <div data-controller="modal">
+    <div data-modal-target="backdrop" class="fixed inset-0 bg-gray-500/70 flex items-center justify-center z-50" data-action="click->modal#clickOutside">
+
+      <%= yield %>
+
+    </div>
+  </div>
+<% end %>
