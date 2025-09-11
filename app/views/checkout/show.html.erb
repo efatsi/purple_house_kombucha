@@ -1,0 +1,52 @@
+<div class="mx-auto max-w-2xl px-4 py-16 sm:px-6 lg:max-w-4xl lg:px-8">
+  <h1 class="text-3xl font-bold tracking-tight text-gray-900 mb-8">
+    Review Your Order
+  </h1>
+
+  <div class="bg-white shadow rounded-lg overflow-hidden">
+    <div class="px-4 py-5 sm:p-6">
+      <% @line_items.each_with_index do |line_item, index| %>
+        <div class="<%= 'border-t border-gray-200 pt-4' if index > 0 %> <%= 'pb-4' unless index == @line_items.length - 1 %>">
+          <div class="flex justify-between items-start">
+            <div class="flex-1">
+              <h3 class="text-lg font-medium text-gray-900">
+                <%= line_item.flavor.name %>
+              </h3>
+              <p class="mt-1 text-sm text-gray-600">
+                <%= line_item.flavor.description %>
+              </p>
+              <div class="mt-2 flex items-center space-x-4 text-sm text-gray-500">
+                <span class="capitalize"><%= line_item.bottle_size %> bottle</span>
+                <span>Quantity: <%= line_item.count %></span>
+              </div>
+            </div>
+            <div class="ml-4 flex-shrink-0">
+              <% if line_item.flavor.image.present? %>
+                <%= image_tag line_item.flavor.image, class: "w-20 h-20 object-cover rounded" %>
+              <% else %>
+                <div class="w-20 h-20 bg-gray-200 rounded flex items-center justify-center">
+                  <span class="text-gray-400 text-xs">No Image</span>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="mt-8 bg-gray-50 rounded-lg p-6">
+    <div class="flex justify-between items-center text-lg font-medium text-gray-900 mb-4">
+      <span>Total Items:</span>
+      <span><%= @line_items.sum(:count) %> bottles</span>
+    </div>
+    
+    <%= form_with url: submit_order_path, method: :patch, local: true, class: "w-full" do |form| %>
+      <%= form.submit "Submit Order", class: "w-full bg-purple-600 text-white py-3 px-4 rounded-md font-medium hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2" %>
+    <% end %>
+  </div>
+
+  <div class="mt-4 text-center">
+    <%= link_to "Continue Shopping", shop_path, class: "text-purple-600 hover:text-purple-500 text-sm font-medium" %>
+  </div>
+</div>

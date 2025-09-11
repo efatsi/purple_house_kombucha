@@ -4,6 +4,9 @@ Rails.application.routes.draw do
   get "/inventory", to: "pages#shop", as: :shop
   resources :line_items, only: [:new, :create]
 
+  get "/checkout", to: "checkout#show", as: :checkout
+  patch "/checkout/submit", to: "checkout#submit", as: :submit_order
+
   namespace :admin do
     root to: "flavors#index"
 

@@ -6,7 +6,7 @@ class LineItemsController < ApplicationController
 
   def create
     flavor = Flavor.find(params[:flavor_id])
-    order = find_or_create_order
+    order = current_order || create_new_order
 
     line_item = order.line_items.find_or_initialize_by(flavor: flavor, bottle_size: params[:bottle_size])
 
@@ -30,22 +30,10 @@ class LineItemsController < ApplicationController
 
   private
 
-  def find_or_create_order
-    current_user.orders.find_by(status: "pre_flight") || create_new_order
-  end
-
   def create_new_order
     Order.create!(
       user: current_user,
       status: "pre_flight"
     )
-  end
-
-  def current_user
-    # For now, create a guest user or handle as needed
-    # You might want to implement proper user authentication later
-    User.find_or_create_by(username: "guest") do |user|
-      user.name = "Guest User"
-    end
   end
 end

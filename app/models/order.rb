@@ -4,7 +4,7 @@ class Order < ApplicationRecord
   validates :status, presence: true, inclusion: { in: STATUSES }
 
   belongs_to :user
-  has_many :line_items
+  has_many :line_items, dependent: :destroy
 end
 
 # == Schema Information
