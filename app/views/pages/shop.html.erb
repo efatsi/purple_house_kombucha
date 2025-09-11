@@ -5,31 +5,33 @@
 
   <div class="mt-6 grid grid-cols-2 gap-x-6 gap-y-10 lg:grid-cols-4 xl:gap-x-8">
     <% Flavor.all.each do |flavor| %>
-      <div class="group relative cursor-pointer" data-action="click->shop#openModal" data-flavor-id="<%= flavor.id %>">
-        <% if flavor.image.present? %>
-          <%= image_tag flavor.image, class: "w-full h-48 object-cover rounded-lg" %>
-        <% else %>
-          <div class="w-full h-48 bg-gray-200 rounded-lg flex items-center justify-center">
-            <span class="text-gray-500">No Image</span>
-          </div>
-        <% end %>
-        <div class="mt-4 flex justify-between">
-          <div>
-            <h3 class="text-sm text-gray-700">
-              <span class="font-medium"><%= flavor.name %></span>
-            </h3>
-            <p class="mt-1 text-sm text-gray-500"><%= flavor.description %></p>
-            <p class="mt-1 text-xs text-gray-400">Available: <%= flavor.available_oz %> oz</p>
+      <%= link_to new_line_item_path(flavor_id: flavor.id), data: { turbo_frame: "modal_frame", action: "click->shop#openModal" } do %>
+        <div class="group relative cursor-pointer">
+          <% if flavor.image.present? %>
+            <%= image_tag flavor.image, class: "w-full h-48 object-cover rounded-lg" %>
+          <% else %>
+            <div class="w-full h-48 bg-gray-200 rounded-lg flex items-center justify-center">
+              <span class="text-gray-500">No Image</span>
+            </div>
+          <% end %>
+          <div class="mt-4 flex justify-between">
+            <div>
+              <h3 class="text-sm text-gray-700">
+                <span class="font-medium"><%= flavor.name %></span>
+              </h3>
+              <p class="mt-1 text-sm text-gray-500"><%= flavor.description %></p>
+              <p class="mt-1 text-xs text-gray-400">Available: <%= flavor.available_oz %> oz</p>
+            </div>
           </div>
         </div>
-      </div>
+      <% end %>
     <% end %>
   </div>
 
   <!-- Modal -->
-  <div data-shop-target="modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden items-center justify-center z-50" data-action="click->shop#clickOutside">
-    <div id="modal_content">
-      <!-- Modal content will be loaded here via Turbo -->
-    </div>
+  <div data-shop-target="modal" class="fixed inset-0 bg-gray-500/70 hidden items-center justify-center z-50" data-action="click->shop#clickOutside">
+    <%= turbo_frame_tag "modal_frame" do %>
+      <!-- Modal content will be loaded here via Turbo Frame -->
+    <% end %>
   </div>
 </div>

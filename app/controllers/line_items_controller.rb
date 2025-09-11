@@ -1,11 +1,7 @@
 class LineItemsController < ApplicationController
   def new
     @flavor = Flavor.find(params[:flavor_id])
-    
-    respond_to do |format|
-      format.html { render partial: "line_items/form", locals: { flavor: @flavor } }
-      format.turbo_stream { render turbo_stream: turbo_stream.update("modal_content", partial: "line_items/form", locals: { flavor: @flavor }) }
-    end
+    render layout: false
   end
 
   def create
@@ -21,9 +17,25 @@ class LineItemsController < ApplicationController
     end
     
     if line_item.save
-      redirect_to shop_path, notice: "#{flavor.name} added to your order!"
+      respond_to do |format|
+        format.html { redirect_to shop_path, notice: "#{flavor.name} added to your order!" }
+        format.turbo_stream do
+          render turbo_stream: [
+            turbo_stream.update("modal_frame", ""),
+            turbo_stream.prepend("flash", partial: "shared/flash", locals: { message: "#{flavor.name} added to your order!", type: "notice" })
+          ]
+        end
+      end
     else
-      redirect_to shop_path, alert: "Error adding item to order."
+      respond_to do |format|
+        format.html { redirect_to shop_path, alert: "Error adding item to order." }
+        format.turbo_stream do
+          render turbo_stream: [
+            turbo_stream.update("modal_frame", ""),
+            turbo_stream.prepend("flash", partial: "shared/flash", locals: { message: "Error adding item to order.", type: "alert" })
+          ]
+        end
+      end
     end
   end
 

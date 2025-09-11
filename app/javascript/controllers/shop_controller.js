@@ -6,42 +6,26 @@ export default class extends Controller {
   connect() {
     // Add event listener for close modal events from dynamically loaded content
     this.element.addEventListener('click', this.handleModalClick.bind(this))
+    // Listen for turbo frame loads
+    this.element.addEventListener('turbo:frame-load', this.handleFrameLoad.bind(this))
   }
 
   disconnect() {
     this.element.removeEventListener('click', this.handleModalClick.bind(this))
+    this.element.removeEventListener('turbo:frame-load', this.handleFrameLoad.bind(this))
   }
 
-  async openModal(event) {
-    const flavorId = event.currentTarget.dataset.flavorId
-    
-    try {
-      const response = await fetch(`/line_items/new?flavor_id=${flavorId}`, {
-        method: 'GET',
-        headers: {
-          'Accept': 'text/html',
-          'X-Requested-With': 'XMLHttpRequest'
-        }
-      })
-      
-      if (response.ok) {
-        const html = await response.text()
-        const modalContent = document.getElementById('modal_content')
-        modalContent.innerHTML = html
-        this.modalTarget.classList.remove('hidden')
-        this.modalTarget.classList.add('flex')
-      }
-    } catch (error) {
-      console.error('Error loading modal:', error)
-    }
+  openModal(event) {
+    // This will be triggered when the link is clicked, but the actual loading is handled by Turbo
+    // The modal will be shown when the frame loads
   }
 
   closeModal() {
     this.modalTarget.classList.add('hidden')
     this.modalTarget.classList.remove('flex')
-    // Clear modal content
-    const modalContent = document.getElementById('modal_content')
-    modalContent.innerHTML = ''
+    // Clear modal content by replacing the turbo frame
+    const modalFrame = document.getElementById('modal_frame')
+    modalFrame.innerHTML = ''
   }
 
   clickOutside(event) {
@@ -55,6 +39,19 @@ export default class extends Controller {
     if (event.target.matches('[data-action*="shop#closeModal"]')) {
       event.preventDefault()
       this.closeModal()
+    }
+  }
+
+  handleFrameLoad(event) {
+    // Show modal when turbo frame loads content, hide when cleared
+    if (event.target.id === 'modal_frame') {
+      if (event.target.innerHTML.trim() !== '') {
+        this.modalTarget.classList.remove('hidden')
+        this.modalTarget.classList.add('flex')
+      } else {
+        this.modalTarget.classList.add('hidden')
+        this.modalTarget.classList.remove('flex')
+      }
     }
   }
 }
