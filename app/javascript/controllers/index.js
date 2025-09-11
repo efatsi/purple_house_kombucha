@@ -1,4 +1,4 @@
 import { application } from "./application"
 
-import ShopController from "./shop_controller"
-application.register("shop", ShopController)
+import ModalController from "./modal_controller"
+application.register("modal", ModalController)

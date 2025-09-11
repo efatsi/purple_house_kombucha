@@ -2,7 +2,7 @@
   <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4">
     <div class="flex justify-between items-center mb-4">
       <h3 class="text-lg font-semibold">Add <%= @flavor.name %> to Order</h3>
-      <button data-action="click->shop#closeModal" class="text-gray-400 hover:text-gray-600">
+      <button data-action="click->modal#close" class="text-gray-400 hover:text-gray-600">
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
         </svg>
@@ -27,7 +27,7 @@
       </div>
       
       <div class="flex gap-3">
-        <button type="button" data-action="click->shop#closeModal" class="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-400 transition-colors">
+        <button type="button" data-action="click->modal#close" class="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-400 transition-colors">
           Cancel
         </button>
         <%= form.submit "Add to Order", class: "flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors" %>

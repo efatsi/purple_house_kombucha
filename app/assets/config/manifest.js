@@ -4,6 +4,4 @@
 
 //= link administrate-field-active_storage/application.css
 //= link application.js
-//= link controllers/application.js
-//= link controllers/index.js
-//= link controllers/shop_controller.js
+//= link_tree ../../javascript/controllers
