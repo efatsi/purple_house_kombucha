@@ -1,11 +1,11 @@
-<div class="mx-auto max-w-2xl px-4 py-16 sm:px-6 lg:max-w-7xl lg:px-8">
+<div class="mx-auto max-w-2xl px-4 py-16 sm:px-6 lg:max-w-7xl lg:px-8" data-controller="shop">
   <h2 class="text-2xl font-bold tracking-tight text-gray-900">
     Flavors in Stock
   </h2>
 
   <div class="mt-6 grid grid-cols-2 gap-x-6 gap-y-10 lg:grid-cols-4 xl:gap-x-8">
     <% Flavor.all.each do |flavor| %>
-      <div class="group relative cursor-pointer" onclick="openModal(<%= flavor.id %>)">
+      <div class="group relative cursor-pointer" data-action="click->shop#openModal" data-flavor-id="<%= flavor.id %>">
         <% if flavor.image.present? %>
           <%= image_tag flavor.image, class: "w-full h-48 object-cover rounded-lg" %>
         <% else %>
@@ -25,68 +25,11 @@
       </div>
     <% end %>
   </div>
-</div>
 
-<!-- Modal -->
-<div id="flavorModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden items-center justify-center z-50">
-  <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4">
-    <div class="flex justify-between items-center mb-4">
-      <h3 class="text-lg font-semibold" id="modalTitle">Add to Order</h3>
-      <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-        </svg>
-      </button>
+  <!-- Modal -->
+  <div data-shop-target="modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden items-center justify-center z-50" data-action="click->shop#clickOutside">
+    <div id="modal_content">
+      <!-- Modal content will be loaded here via Turbo -->
     </div>
-    
-    <form id="addToOrderForm" method="post">
-      <%= csrf_meta_tags %>
-      <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
-      <input type="hidden" name="flavor_id" id="modalFlavorId">
-      
-      <div class="mb-4">
-        <label class="block text-sm font-medium text-gray-700 mb-2">Bottle Size</label>
-        <select name="bottle_size" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-          <option value="small">Small</option>
-          <option value="medium" selected>Medium</option>
-          <option value="large">Large</option>
-        </select>
-      </div>
-      
-      <div class="mb-6">
-        <label class="block text-sm font-medium text-gray-700 mb-2">Quantity</label>
-        <input type="number" name="count" value="1" min="1" max="10" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-      </div>
-      
-      <div class="flex gap-3">
-        <button type="button" onclick="closeModal()" class="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-400 transition-colors">
-          Cancel
-        </button>
-        <button type="submit" class="flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors">
-          Add to Order
-        </button>
-      </div>
-    </form>
   </div>
 </div>
-
-<script>
-  function openModal(flavorId) {
-    document.getElementById('modalFlavorId').value = flavorId;
-    document.getElementById('addToOrderForm').action = '/line_items';
-    document.getElementById('flavorModal').classList.remove('hidden');
-    document.getElementById('flavorModal').classList.add('flex');
-  }
-  
-  function closeModal() {
-    document.getElementById('flavorModal').classList.add('hidden');
-    document.getElementById('flavorModal').classList.remove('flex');
-  }
-  
-  // Close modal when clicking outside
-  document.getElementById('flavorModal').addEventListener('click', function(e) {
-    if (e.target === this) {
-      closeModal();
-    }
-  });
-</script>

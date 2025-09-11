@@ -1,4 +1,13 @@
 class LineItemsController < ApplicationController
+  def new
+    @flavor = Flavor.find(params[:flavor_id])
+    
+    respond_to do |format|
+      format.html { render partial: "line_items/form", locals: { flavor: @flavor } }
+      format.turbo_stream { render turbo_stream: turbo_stream.update("modal_content", partial: "line_items/form", locals: { flavor: @flavor }) }
+    end
+  end
+
   def create
     flavor = Flavor.find(params[:flavor_id])
     order = find_or_create_order
